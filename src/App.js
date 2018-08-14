@@ -6,6 +6,8 @@ import LoginForm from './components/LoginForm';
 import RegistrationForm from './components/RegistrationForm';
 import Dashboard from './components/Dashboard';
 import NewQuiz from './components/NewQuiz';
+import Questions from './components/Questions';
+
 import io from 'socket.io-client';
 
 class App extends Component {
@@ -26,6 +28,7 @@ class App extends Component {
     else if(this.state.mode === "registration") screen = <RegistrationForm app={this} socket={this.socket}/>
     else if(this.state.mode === "dashboard") screen = <Dashboard app={this} socket={this.socket}/>
     else if(this.state.mode === "newQuiz") screen = <NewQuiz app={this} socket={this.socket}/>
+    else if(this.state.mode === "questions") screen = <Questions app={this} socket={this.socket}/>
 
     else  screen = <div>
                     <Button onClick={() => this.setState({mode: 'login'})}>Login</Button>
