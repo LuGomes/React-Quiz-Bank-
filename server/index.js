@@ -3,7 +3,6 @@ var server = require('http').Server(app);
 var io = require('socket.io')(server);
 var User = require('./models/models').User;
 
-
 io.on('connection', function (socket) {
   socket.on('login', function (data, next) {
     const {username, password} = data;
@@ -31,6 +30,10 @@ io.on('connection', function (socket) {
       }
     })
   });
+
+  socket.on('getQuizzes', (data,next) => {
+    next(['Luci', 'Harman']);
+  })
 })
 
 server.listen(3001, () => console.log("Listening to port 3001"));

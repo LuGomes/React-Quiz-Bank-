@@ -60,6 +60,6 @@ var questionsSchema = new mongoose.Schema({
 
 const User = mongoose.model('User', userSchema);
 const Quiz = mongoose.model('Quiz', quizSchema);
-const Questions = mongoose.model('Questions', questionSchema);
+const Questions = mongoose.model('Questions', questionsSchema);
 const Score = mongoose.model('Score', scoreSchema);
 module.exports = {User, Quiz, Questions, Score};

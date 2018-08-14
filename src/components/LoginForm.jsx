@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
-import { BrowserRouter as Router, Link, Route, Redirect} from 'react-router-dom';
 
 class LoginForm extends Component {
   constructor(props) {
@@ -15,7 +14,7 @@ class LoginForm extends Component {
   handleLogin() {
     let {username, password} = this.state;
     this.props.socket.emit('login', {username: username, password: password}, (data) => {
-      if(data.user) this.props.app.setState({username: data.user.username, password: data.user.password, isLoggedIn: true, mode: ''});
+      if(data.user) this.props.app.setState({username: data.user.username, password: data.user.password, mode: 'dashboard'});
       else console.log(data.err);
     });
   }
@@ -27,11 +26,6 @@ class LoginForm extends Component {
         <TextField type="password" label="Password" onChange={(e) => this.setState({password: e.target.value})}/><br/>
         <Button onClick={() => this.handleLogin()}>Login</Button><br/>
         {/* <a href="#">Don't have an account yet?</a> */}
-        <Router>
-
-          <Link to={'/register'}> Don't have an account yet?</Link>
-
-        </Router>
       </div>
     );
   }
