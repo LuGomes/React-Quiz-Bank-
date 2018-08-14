@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
+import { BrowserRouter as Router, Link, Route, Redirect} from 'react-router-dom';
 
 class LoginForm extends Component {
   constructor(props) {
@@ -25,7 +26,12 @@ class LoginForm extends Component {
         <TextField type="text" label="Username" onChange={(e) => this.setState({username: e.target.value})}/><br/>
         <TextField type="password" label="Password" onChange={(e) => this.setState({password: e.target.value})}/><br/>
         <Button onClick={() => this.handleLogin()}>Login</Button><br/>
-        <a href="#">Don't have an account yet?</a>
+        {/* <a href="#">Don't have an account yet?</a> */}
+        <Router>
+
+          <Link to={'/register'}> Don't have an account yet?</Link>
+
+        </Router>
       </div>
     );
   }
