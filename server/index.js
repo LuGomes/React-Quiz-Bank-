@@ -2,6 +2,8 @@ var app = require('express')();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 var User = require('./models/models').User;
+var Question = require('./models/models').Question;
+var Quiz = require('./models/models').Quiz;
 
 io.on('connection', function (socket) {
   socket.on('login', function (data, next) {
@@ -30,6 +32,45 @@ io.on('connection', function (socket) {
       }
     })
   });
+
+  socket.on('addQuestion', (data,next)=> {
+    let newQuestion = new Question(
+      {questions: data.questions,
+        options: data.options,
+        quiz: data.currQuizID
+    });
+    newQuestion.save((err,resp) =>{
+  if (!err) {
+    next({message: 'saved to mongoDB'})
+  }
+  else {
+    next({message: 'error'})
+  }
+  });
+  })
+
+  socket.on('addQuiz', (data,next)=> {
+    User.findOne({username: data.username})
+    .exec()
+    .then(user => {
+      let newQuiz = new Quiz(
+        {quizTitle: data.quizTitle,
+          teacher: user._id,
+          isComplete: false
+        });
+
+        newQuiz.save((err,resp) =>{
+          if (!err) {
+            next({message: 'new Quiz saved', currQuizID: resp._id})
+          }
+          else {
+            next({message: err})
+          }
+        });
+      })
+    })
+
+
 
   socket.on('getQuizzes', (data,next) => {
     next(['Luci', 'Harman']);

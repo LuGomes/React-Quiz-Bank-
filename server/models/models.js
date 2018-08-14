@@ -45,7 +45,7 @@ var scoreSchema = new mongoose.Schema({
   }
 })
 
-var questionsSchema = new mongoose.Schema({
+var questionSchema = new mongoose.Schema({
   quiz: {
     type: mongoose.Schema.ObjectId,
     ref: 'Quiz'
@@ -53,13 +53,15 @@ var questionsSchema = new mongoose.Schema({
   questions: [{
     type: String,
     required: true
-
-
-  }]
+  }],
+  options: [{
+    type: String,
+    required: true
+  }],
 })
 
 const User = mongoose.model('User', userSchema);
 const Quiz = mongoose.model('Quiz', quizSchema);
-const Questions = mongoose.model('Questions', questionsSchema);
+const Question = mongoose.model('Question', questionSchema);
 const Score = mongoose.model('Score', scoreSchema);
-module.exports = {User, Quiz, Questions, Score};
+module.exports = {User, Quiz, Question, Score};

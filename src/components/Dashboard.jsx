@@ -19,9 +19,10 @@ class Dashboard extends Component {
   render() {
     return (
       <div>
-        <h1>This is the dashboard</h1>
+        <h1>Hello {this.props.app.state.username}</h1>
         {this.state.data.map(item => (<p>{item}</p>))}
         <Button onClick={() => this.props.app.setState({mode: "newQuiz"})}>Create Quiz</Button>
+
     </div>
     );
   }
