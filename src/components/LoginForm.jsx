@@ -7,14 +7,15 @@ class LoginForm extends Component {
     super(props);
     this.state = {
       username: '',
-      password: ''
+      password: '',
     }
   }
 
   handleLogin() {
     let {username, password} = this.state;
     this.props.socket.emit('login', {username: username, password: password}, (data) => {
-      if(data.user) this.props.app.setState({username: data.user.username, password: data.user.password, mode: 'dashboard'});
+      let mode = data.user.userType === "student" ? 'studentDashboard' : 'teacherDashboard';
+      if(data.user) this.props.app.setState({username: data.user.username, password: data.user.password, mode: mode});
       else console.log(data.err);
     });
   }

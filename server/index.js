@@ -22,8 +22,8 @@ io.on('connection', function (socket) {
   });
 
   socket.on('registration', function (data, next) {
-    const {username, password} = data;
-    var newUser = new User({username: username, password: password});
+    const {username, password, userType} = data;
+    var newUser = new User({username: username, password: password, userType: userType});
     newUser.save((err, user) => {
       if(user) {
         next({user: user, err: null});
@@ -82,7 +82,29 @@ io.on('connection', function (socket) {
         next(quiz);
       })
     })
-  })
+  });
+
+  socket.on('getQuizzesForStudent', (data,next) => {
+    Quiz.find().exec().then(quizzes => {
+      next(quizzes)
+    })
+  });
+
+  socket.on('getQuizById', (data, next) => {
+    Quiz.findById(data.quizId)
+    .exec()
+    .then(quiz => {
+      Question.findOne({quiz: quiz._id})
+      .exec()
+      .then(question => {
+        for(let i = 0; i < question.options.length; i++) {
+          question.options[i].pop();
+        }
+        next(question);
+
+      })
+    })
+  });
 })
 
 server.listen(3001, () => console.log("Listening to port 3001"));

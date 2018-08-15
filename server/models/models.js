@@ -10,6 +10,10 @@ var userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true
+  },
+  userType: {
+    type: String,
+    required: true
   }
 });
 
@@ -54,10 +58,10 @@ var questionSchema = new mongoose.Schema({
     type: String,
     required: true
   }],
-  options: [{
+  options: [[{
     type: String,
     required: true
-  }],
+  }]],
 })
 
 const User = mongoose.model('User', userSchema);

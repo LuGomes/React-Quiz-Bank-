@@ -4,7 +4,8 @@ import logo from './logo.svg';
 import './App.css';
 import LoginForm from './components/LoginForm';
 import RegistrationForm from './components/RegistrationForm';
-import Dashboard from './components/Dashboard';
+import TeacherDashboard from './components/TeacherDashboard';
+import StudentDashboard from './components/StudentDashboard';
 import NewQuiz from './components/NewQuiz';
 import Questions from './components/Questions';
 
@@ -26,7 +27,8 @@ class App extends Component {
     let screen;
     if(this.state.mode === "login") screen = <LoginForm app={this} socket={this.socket}/>
     else if(this.state.mode === "registration") screen = <RegistrationForm app={this} socket={this.socket}/>
-    else if(this.state.mode === "dashboard") screen = <Dashboard app={this} socket={this.socket}/>
+    else if(this.state.mode === "teacherDashboard") screen = <TeacherDashboard app={this} socket={this.socket}/>
+    else if(this.state.mode === "studentDashboard") screen = <StudentDashboard app={this} socket={this.socket}/>
     else if(this.state.mode === "newQuiz") screen = <NewQuiz app={this} socket={this.socket}/>
     else if(this.state.mode === "questions") screen = <Questions app={this} socket={this.socket}/>
 

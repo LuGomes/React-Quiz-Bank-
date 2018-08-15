@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 
-class Dashboard extends Component {
+class TeacherDashboard extends Component {
   constructor(props) {
     super(props);
     this.state= {
@@ -27,4 +27,4 @@ class Dashboard extends Component {
   }
 }
 
-export default Dashboard;
+export default TeacherDashboard;
