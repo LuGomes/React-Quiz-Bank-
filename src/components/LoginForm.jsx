@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import Button from '@material-ui/core/Button';
+import Paper from '@material-ui/core/Paper'
 import TextField from '@material-ui/core/TextField';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
 
 class LoginForm extends Component {
   constructor(props) {
@@ -22,11 +25,19 @@ class LoginForm extends Component {
 
   render() {
     return (
-      <div>
-        <TextField type="text" label="Username" onChange={(e) => this.setState({username: e.target.value})}/><br/>
-        <TextField type="password" label="Password" onChange={(e) => this.setState({password: e.target.value})}/><br/>
-        <Button onClick={() => this.handleLogin()}>Login</Button><br/>
-        {/* <a href="#">Don't have an account yet?</a> */}
+      <div style={{display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 20}}>
+        <Paper elevation={2}>
+          <AppBar position="static" color="secondary">
+            <Toolbar>
+            </Toolbar>
+          </AppBar>
+          <div style={{padding: 20}}>
+            <TextField type="text" label="Username" onChange={(e) => this.setState({username: e.target.value})}/><br/>
+            <TextField type="password" label="Password" onChange={(e) => this.setState({password: e.target.value})}/><br/>
+            <Button onClick={() => this.handleLogin()}>Login</Button><br/>
+            <Button onClick={() => this.props.app.setState({mode: "registration"})}>Don't have an account yet?</Button><br/>
+          </div>
+      </Paper>
       </div>
     );
   }

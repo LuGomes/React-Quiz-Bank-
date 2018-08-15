@@ -33,8 +33,8 @@ class App extends Component {
     else if(this.state.mode === "questions") screen = <Questions app={this} socket={this.socket}/>
 
     else  screen = <div>
-                    <Button onClick={() => this.setState({mode: 'login'})}>Login</Button>
-                    <Button onClick={() => this.setState({mode: 'registration'})}>Register</Button>
+                    <Button style={styles.button} variant="contained" color="secondary" onClick={() => this.setState({mode: 'login'})}>Login</Button>
+                    <Button style={styles.button} variant="contained" color="secondary" onClick={() => this.setState({mode: 'registration'})}>Register</Button>
                    </div>
     return (
       <div className="App">
@@ -47,5 +47,10 @@ class App extends Component {
     );
   }
 }
-
+const styles = {
+  button: {
+    padding: 15,
+    margin: 10
+  }
+}
 export default App;
