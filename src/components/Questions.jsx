@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 
-
 class NewQuiz extends Component {
   constructor(props) {
     super(props);
@@ -10,6 +9,7 @@ class NewQuiz extends Component {
       question: '',
       questionsArr: [],
       optionsArr: [],
+      correctOptionsArr: [],
       optionA: '',
       optionB: '',
       optionC: '',
@@ -17,26 +17,35 @@ class NewQuiz extends Component {
     }
   }
 
-
   handleQuestionAddition() {
     let {question, optionA, optionB, optionC, correctOption} = this.state;
     let currQuestions = this.state.questionsArr.slice();
-    currQuestions = currQuestions.concat([question])
-
+    currQuestions = currQuestions.concat([question]);
     let currOptions = this.state.optionsArr.slice();
-    currOptions = currOptions.concat([[optionA, optionB, optionC, correctOption]])
-    this.setState({questionsArr: currQuestions, optionsArr: currOptions, question: '', optionA: '', optionB: '', optionC: '', correctOption: ''});
+    currOptions = currOptions.concat([[optionA, optionB, optionC]]);
+    let currCorrectOptions = this.state.correctOptionsArr.slice();
+    currCorrectOptions = currCorrectOptions.concat([correctOption]);
+    this.setState({
+      questionsArr: currQuestions,
+      optionsArr: currOptions,
+      correctOptionsArr: currCorrectOptions,
+      question: '',
+      optionA: '',
+      optionB: '',
+      optionC: '',
+      correctOption: ''});
   }
 
   handleQuizComplete() {
-    this.props.socket.emit('addQuestion',
-      {questions: this.state.questionsArr, options: this.state.optionsArr, currQuizID: this.props.app.state.currQuizID}, (resp) => {
+    this.props.socket.emit('addQuestion', {
+      questions: this.state.questionsArr,
+      options: this.state.optionsArr,
+      correctOptions: this.state.correctOptionsArr,
+      currQuizID: this.props.app.state.currQuizID}, (resp) => {
         console.log(resp.message);
-      }
-      )
-    this.props.app.setState({mode: "dashboard"});
+      });
+    this.props.app.setState({mode: "teacherDashboard"});
   }
-
 
   render() {
     return (

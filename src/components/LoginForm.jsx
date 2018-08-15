@@ -17,9 +17,20 @@ class LoginForm extends Component {
   handleLogin() {
     let {username, password} = this.state;
     this.props.socket.emit('login', {username: username, password: password}, (data) => {
-      let mode = data.user.userType === "student" ? 'studentDashboard' : 'teacherDashboard';
-      if(data.user) this.props.app.setState({username: data.user.username, password: data.user.password, mode: mode});
-      else console.log(data.err);
+      if(!data.err) {
+        if(data.user) {
+          //user found
+          let mode = data.user.userType === "student" ? 'studentDashboard' : 'teacherDashboard';
+          this.props.app.setState({username: data.user.username, password: data.user.password, mode: mode});
+        } else {
+          //there is no user with that login
+          alert("Invalid username or password");
+          this.setState({username: '', password: ''});
+        }
+      } else {
+        // server error
+        alert ("Could not lookup mongoDB");
+      }
     });
   }
 
@@ -32,8 +43,8 @@ class LoginForm extends Component {
             </Toolbar>
           </AppBar>
           <div style={{padding: 20}}>
-            <TextField type="text" label="Username" onChange={(e) => this.setState({username: e.target.value})}/><br/>
-            <TextField type="password" label="Password" onChange={(e) => this.setState({password: e.target.value})}/><br/>
+            <TextField type="text" label="Username" value={this.state.username} onChange={(e) => this.setState({username: e.target.value})}/><br/>
+            <TextField type="password" label="Password" value={this.state.password} onChange={(e) => this.setState({password: e.target.value})}/><br/>
             <Button onClick={() => this.handleLogin()}>Login</Button><br/>
             <Button onClick={() => this.props.app.setState({mode: "registration"})}>Don't have an account yet?</Button><br/>
           </div>

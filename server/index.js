@@ -37,6 +37,7 @@ io.on('connection', function (socket) {
     let newQuestion = new Question(
       {questions: data.questions,
         options: data.options,
+        correctOptions: data.correctOptions,
         quiz: data.currQuizID
     });
     newQuestion.save((err,resp) =>{
@@ -86,23 +87,18 @@ io.on('connection', function (socket) {
 
   socket.on('getQuizzesForStudent', (data,next) => {
     Quiz.find().exec().then(quizzes => {
-      next(quizzes)
+      next(quizzes);
     })
   });
 
   socket.on('getQuizById', (data, next) => {
-    Quiz.findById(data.quizId)
+    Question.findOne({quiz: data.quizId})
     .exec()
-    .then(quiz => {
-      Question.findOne({quiz: quiz._id})
-      .exec()
-      .then(question => {
-        for(let i = 0; i < question.options.length; i++) {
-          question.options[i].pop();
-        }
-        next(question);
-
-      })
+    .then(question => {
+      // for(let i = 0; i < question.options.length; i++) {
+      //   question.options[i].pop();
+      // }
+      next(question);
     })
   });
 })

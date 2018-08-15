@@ -13,7 +13,7 @@ class StudentDashboard extends Component {
   }
   componentDidMount() {
     this.props.socket.emit('getQuizzesForStudent', {}, (data) => {
-      this.setState({quizzes: data})
+      this.setState({quizzes: data});
     })
   }
 
@@ -24,6 +24,7 @@ class StudentDashboard extends Component {
   }
 
   render() {
+    console.log(this.state.currentQuiz);
     return (
       <div>
         <h1>Welcome, {this.props.app.state.username}!</h1>
