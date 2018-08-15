@@ -10,9 +10,8 @@ class Dashboard extends Component {
     }
   }
   componentDidMount() {
-    this.props.socket.emit('getQuizzes', {}, (data) => {
-      console.log(data);
-      this.setState({data: data})
+    this.props.socket.emit('getQuizzes', {teacher: this.props.app.state.username}, (data) => {
+      this.setState({data: data}, () => console.log(data))
     })
   }
 
@@ -20,7 +19,7 @@ class Dashboard extends Component {
     return (
       <div>
         <h1>Hello {this.props.app.state.username}</h1>
-        {this.state.data.map(item => (<p>{item}</p>))}
+        {this.state.data.map(item => (<p>{item.quizTitle}: {item.isComplete.toString()}</p>))}
         <Button onClick={() => this.props.app.setState({mode: "newQuiz"})}>Create Quiz</Button>
 
     </div>

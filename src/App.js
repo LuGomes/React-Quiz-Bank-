@@ -16,9 +16,6 @@ class App extends Component {
     this.state = {
       username: '',
       password: '',
-      currQuizID: ''
-
-
     };
     this.socket = io('http://localhost:3001');
     this.socket.on('connect', function(){console.log('ws connect')});

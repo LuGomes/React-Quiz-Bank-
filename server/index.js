@@ -47,6 +47,8 @@ io.on('connection', function (socket) {
     next({message: 'error'})
   }
   });
+  Quiz.findByIdAndUpdate({_id: data.currQuizID}, {isComplete: true})
+  .exec()
   })
 
   socket.on('addQuiz', (data,next)=> {
@@ -70,10 +72,16 @@ io.on('connection', function (socket) {
       })
     })
 
-
-
   socket.on('getQuizzes', (data,next) => {
-    next(['Luci', 'Harman']);
+    User.findOne({username: data.teacher})
+    .exec()
+    .then(user => {
+      Quiz.find({teacher: user._id})
+      .exec()
+      .then(quiz => {
+        next(quiz);
+      })
+    })
   })
 })
 

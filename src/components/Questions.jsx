@@ -34,7 +34,6 @@ class NewQuiz extends Component {
         console.log(resp.message);
       }
       )
-
     this.props.app.setState({mode: "dashboard"});
   }
 
