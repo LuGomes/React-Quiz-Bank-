@@ -35,10 +35,7 @@ var quizSchema = new mongoose.Schema({
 })
 
 var scoreSchema = new mongoose.Schema({
-  teacher: {
-    type: mongoose.Schema.ObjectId,
-    ref: 'User'
-  },
+
   students: [{
     type: mongoose.Schema.ObjectId,
     ref: 'User'

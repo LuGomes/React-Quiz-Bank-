@@ -49,7 +49,18 @@ class StudentDashboard extends Component {
             sum ++;
           }
         }
-        this.setState({score: sum / correctOptions.length * 100 + "%"});
+        this.setState({score: sum / correctOptions.length * 100 + "%"}, () => {
+          this.props.socket.emit('submitScore',
+          {student: this.props.app.state.username,
+            quiz: this.state.currentQuiz.quiz,
+            score: this.state.score}, (data) => {
+            console.log(data.message);
+
+          }
+        )
+        });
+
+
 
       });
     }
@@ -59,7 +70,8 @@ class StudentDashboard extends Component {
     return (
       <div>
         <h1>Welcome, {this.props.app.state.username}!</h1>
-        {this.state.quizzes.map(quiz => (<Button onClick={() => this.takeQuiz(quiz._id)}>{quiz.quizTitle}</Button>))}
+        {this.state.quizzes.map(quiz => (<Button onClick={() => this.takeQuiz(quiz._id)}>{quiz.quizTitle}</Button>))}<br/>
+        <Button onClick={() => this.props.app.setState({mode: '', username: '', password: ''})}>Logout</Button>
         {this.state.showQuiz ?
           <div style={{display: "flex", flexDirection: "column", alignItems: "center"}}>
             {this.state.score ? <Button variant="contained" color="secondary">You scored {this.state.score}</Button> : null}

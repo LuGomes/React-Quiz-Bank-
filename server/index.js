@@ -4,6 +4,7 @@ var io = require('socket.io')(server);
 var User = require('./models/models').User;
 var Question = require('./models/models').Question;
 var Quiz = require('./models/models').Quiz;
+var Score = require('./models/models').Score;
 
 io.on('connection', function (socket) {
   socket.on('login', function (data, next) {
@@ -101,6 +102,62 @@ io.on('connection', function (socket) {
       next(question);
     })
   });
+
+
+
+  socket.on('submitScore', (data, next) => {
+    Score.findOne({quiz: data.quiz})
+    .exec()
+    .then(resp => {
+      if (resp) {
+        User.findOne({username: data.student})
+        .exec()
+        .then(user => {
+          resp.students = resp.students.concat([user._id])
+          resp.scores = resp.scores.concat([data.score])
+          Score.findOneAndUpdate({quiz: data.quiz}, {students: resp.students, scores: resp.scores})
+          .exec()
+        })
+        //quiz was taken by somebody already
+      } else {
+        //quiz hasnt been taken by anyone, i want to create a new document
+        User.findOne({username:data.student})
+        .exec()
+        .then(user => {
+          let newScore = new Score({
+            students: [user._id],
+            quiz: data.quiz,
+            scores: [data.score]
+          })
+          newScore.save((err, resp)=> {
+            if (!err) {
+              next({message: 'Score Saved!', data:resp})
+            } else {
+              next({message: err})
+            }
+          })
+        })
+      }
+    })
+  })
+  socket.on('getScores', (data, next) => {
+    console.log(data.quizId)
+    Score.findOne({quiz: data.quizId})
+    .populate("students")
+    .exec()
+    .then(score => {
+      console.log("this should be the score document", score)
+      if (score) {
+        next({data: score, message: "success!!!!"});
+
+      } else {
+        next({data: null, message:"no students have taken quiz yet"})
+      }
+
+
+    })
+  });
+
 })
 
 server.listen(3001, () => console.log("Listening to port 3001"));

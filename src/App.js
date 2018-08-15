@@ -24,6 +24,7 @@ class App extends Component {
   }
 
   render() {
+    
     let screen;
     if(this.state.mode === "login") screen = <LoginForm app={this} socket={this.socket}/>
     else if(this.state.mode === "registration") screen = <RegistrationForm app={this} socket={this.socket}/>
