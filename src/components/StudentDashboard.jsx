@@ -20,10 +20,19 @@ class StudentDashboard extends Component {
     })
   }
 
-  takeQuiz(quizId) {
-    this.props.socket.emit('getQuizById', {quizId: quizId}, (currentQuiz) => {
-      this.setState({currentQuiz: currentQuiz, showQuiz: true});
+  takeQuiz(quizId, username) {
+    this.props.socket.emit('checkIfTaken', {quizId: quizId, username: username}, (data)=> {
+      if (data) {
+        //if student has already taken quiz, alert
+      } else {
+        this.props.socket.emit('getQuizById', {quizId: quizId}, (currentQuiz) => {
+
+          this.setState({currentQuiz: currentQuiz, showQuiz: true});
+        })
+
+      }
     })
+
   }
 
   handleSubmitQuiz() {
@@ -70,7 +79,7 @@ class StudentDashboard extends Component {
     return (
       <div>
         <h1>Welcome, {this.props.app.state.username}!</h1>
-        {this.state.quizzes.map(quiz => (<Button onClick={() => this.takeQuiz(quiz._id)}>{quiz.quizTitle}</Button>))}<br/>
+        {this.state.quizzes.map(quiz => (<Button onClick={() => this.takeQuiz(quiz._id, this.props.app.state.username)}>{quiz.quizTitle}</Button>))}<br/>
         <Button onClick={() => this.props.app.setState({mode: '', username: '', password: ''})}>Logout</Button>
         {this.state.showQuiz ?
           <div style={{display: "flex", flexDirection: "column", alignItems: "center"}}>

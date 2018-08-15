@@ -157,6 +157,9 @@ io.on('connection', function (socket) {
 
     })
   });
+  socket.on('checkIfTaken', (data, next) => {
+    Score.findOne({})
+  })
 
 })
 
