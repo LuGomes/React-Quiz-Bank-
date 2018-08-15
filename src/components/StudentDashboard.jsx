@@ -10,7 +10,8 @@ class StudentDashboard extends Component {
       currentQuiz: {},
       showQuiz: false,
       studentAnswers: [],
-      score: ''
+      score: '',
+
     }
   }
   componentDidMount() {
@@ -55,15 +56,14 @@ class StudentDashboard extends Component {
             quiz: this.state.currentQuiz.quiz,
             score: this.state.score}, (data) => {
             console.log(data.message);
-
           }
         )
         });
-
-
-
       });
     }
+  }
+  backToDashboard() {
+    this.setState({showQuiz: false})
   }
 
   render() {
@@ -86,7 +86,8 @@ class StudentDashboard extends Component {
                 </div></li>
               ))}
             </ol>
-            <Button onClick={() => this.handleSubmitQuiz()}>Submit Quiz</Button>
+            <Button onClick={() => this.handleSubmitQuiz()}>Submit Quiz</Button><br/>
+            <Button onClick={()=> this.backToDashboard()}>Back to Dashboard</Button>
           </div>
           : null}
     </div>

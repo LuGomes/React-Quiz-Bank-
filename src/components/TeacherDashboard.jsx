@@ -20,8 +20,13 @@ class TeacherDashboard extends Component {
 
   handleGetScores(quizId, quizTitle) {
     this.props.socket.emit('getScores', {quizId: quizId}, (data) => {
+      if (data) {
+        this.setState({currQuizScore: data.data, showScores: true, currQuizTitle: quizTitle})
+      } else {
+        alert(data.message)
+      }
       console.log(data.message);
-      this.setState({currQuizScore: data.data, showScores: true, currQuizTitle: quizTitle})
+
     })
   }
 
@@ -38,8 +43,19 @@ class TeacherDashboard extends Component {
             <h3>{this.state.currQuizTitle} </h3>
 
 
-              {this.state.currQuizScore.students.map((item, index) => <span> {item.username} : {this.state.currQuizScore.scores[index]}<br/></span>)}
+
+
+              {this.state.currQuizScore?
+                <div>
+                  {this.state.currQuizScore.students.map((item, index) => <span> {item.username} :
+                    {this.state.currQuizScore.scores[index]}<br/></span>)}
+              <Button onClick={()=> this.backToDashboard()}>Back to Dashboard</Button> </div> :
+              <div>
+              <p> No students have taken this quiz yet </p>
               <Button onClick={()=> this.backToDashboard()}>Back to Dashboard</Button>
+            </div>
+          }
+
           </div> :
 
           (
