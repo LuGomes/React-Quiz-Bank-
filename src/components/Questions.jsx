@@ -47,10 +47,13 @@ class NewQuiz extends Component {
     this.props.app.setState({mode: "teacherDashboard"});
   }
 
+  backToDashboard() {
+    this.props.app.setState({mode: 'teacherDashboard'});
+  }
+
   render() {
     return (
       <div>
-        <h1>This is a new question</h1>
         <TextField type="text" label="Enter question" value={this.state.question} onChange={(e) => this.setState({question: e.target.value})}/><br/>
         <TextField type="text" label="Option a." value={this.state.optionA} onChange={(e) => this.setState({optionA: e.target.value})}/><br/>
 
@@ -58,10 +61,12 @@ class NewQuiz extends Component {
 
         <TextField type="text" label="Option c." value={this.state.optionC} onChange={(e) => this.setState({optionC: e.target.value})}/><br/>
 
-        <TextField type="text" label="Correct option" value={this.state.correctOption} onChange={(e) => this.setState({correctOption: e.target.value})}/><br/>
+        <TextField type="text" label="correct Option: a, b or c?" value={this.state.correctOption} onChange={(e) => this.setState({correctOption: e.target.value})}/><br/>
 
         <Button onClick={() => this.handleQuestionAddition()}>Add this question</Button>
         <Button onClick={() => this.handleQuizComplete()}>Finish quiz</Button>
+        <Button onClick={() => this.backToDashboard()}>Back to Dashboard</Button>
+
     </div>
     );
   }

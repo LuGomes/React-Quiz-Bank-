@@ -35,6 +35,8 @@ class TeacherDashboard extends Component {
   }
 
   render() {
+    const btnStyle = {};
+
     return (
       <div>
         <h1>Hello {this.props.app.state.username}</h1>
@@ -56,13 +58,13 @@ class TeacherDashboard extends Component {
 
           (
             <div>
-              {this.state.data.map(item => (<Button onClick={()=> this.handleGetScores(item._id)}>{item.quizTitle}: {item.isComplete.toString()}</Button>))}<br/>
+              {this.state.data.map(item =>
+                (<Button style={item.isComplete ? {backgroundColor: "green"} : {backgroundColor: "red"}} onClick={()=> this.handleGetScores(item._id)}>{item.quizTitle}</Button>)
+              )}<br/>
               <Button onClick={() => this.props.app.setState({mode: "newQuiz"})}>Create Quiz</Button><br/>
               <Button onClick={() => this.props.app.setState({mode: '', username: '', password: ''})}>Logout</Button>
             </div>)
           }
-
-
         </div>
       );
   }

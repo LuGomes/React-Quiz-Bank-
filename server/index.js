@@ -88,19 +88,19 @@ io.on('connection', function (socket) {
 
   socket.on('getQuizzesForStudent', (data,next) => {
     Quiz.find().exec().then(quizzes => {
-      next(quizzes);
+      let completedQuizzes = [];
+      for(let i = 0; i < quizzes.length; i++) {
+        if(quizzes[i].isComplete) completedQuizzes.push(quizzes[i]);
+      }
+      next(completedQuizzes);
     })
   });
 
   socket.on('getQuizById', (data, next) => {
     Question.findOne({quiz: data.quizId})
     .exec()
-    .then(question => {
-      // for(let i = 0; i < question.options.length; i++) {
-      //   question.options[i].pop();
-      // }
-      next(question);
-    })
+    .then(question => next(question)
+    )
   });
 
 
@@ -176,6 +176,8 @@ io.on('connection', function (socket) {
           } else {
             next({data: null, message: "you havent taken this quiz yet, you can take it only once", taken: taken});
           }
+        } else {
+          next({data: null, message:"no one has taken this quiz yet", taken: false})
         }
       })
     })

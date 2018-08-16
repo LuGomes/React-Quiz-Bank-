@@ -11,6 +11,7 @@ class StudentDashboard extends Component {
       showQuiz: false,
       studentAnswers: [],
       score: '',
+      quizTitle: ''
     }
   }
   componentDidMount() {
@@ -19,15 +20,16 @@ class StudentDashboard extends Component {
     })
   }
 
-  takeQuiz(quizId, username) {
+  takeQuiz(quizId, username, quizTitle) {
+    this.setState({quizTitle: quizTitle});
     this.props.socket.emit('checkIfTaken', {quizId: quizId, username: username}, (data)=> {
       if (data.taken) {
         //if student has already taken quiz, alert
         alert(data.message);
       } else {
         //no one has taken or you haven't taken, wither way you can take this quiz
-        this.props.socket.emit('getQuizById', {quizId: quizId}, (currentQuiz) => {
-        this.setState({currentQuiz: currentQuiz, showQuiz: true});
+        this.props.socket.emit('getQuizById', {quizId: quizId}, (data) => {
+        this.setState({currentQuiz: data, showQuiz: true});
         })
       }
     })
@@ -77,15 +79,13 @@ class StudentDashboard extends Component {
     return (
       <div>
         <h1>Welcome, {this.props.app.state.username}!</h1>
-        {this.state.quizzes.map(quiz => (<Button onClick={() => this.takeQuiz(quiz._id, this.props.app.state.username)}>{quiz.quizTitle}</Button>))}<br/>
-        <Button onClick={() => this.props.app.setState({mode: '', username: '', password: ''})}>Logout</Button>
         {this.state.showQuiz ?
           <div style={{display: "flex", flexDirection: "column", alignItems: "center"}}>
+            <p style={{color:"green"}}><strong>{this.state.quizTitle}</strong></p>
             {this.state.score ? <Button variant="contained" color="secondary">You scored {this.state.score}</Button> : null}
             <ol>
               {this.state.currentQuiz.questions.map((question, index) => (
                 <li style={{textAlign: "left", fontWeight: "bold"}}>{question}<div className="radio" style={{display: "flex", flexDirection: "column", fontWeight: "normal"}}>
-                  {/* {this.state.currentQuiz.options[index].map(option => <label><input type="radio" name={index}/>{option}</label>)} */}
                   <label><input type="radio" name={index} id={"A"+index.toString()}/>{this.state.currentQuiz.options[index][0]}</label>
                   <label><input type="radio" name={index} id={"B"+index.toString()}/>{this.state.currentQuiz.options[index][1]}</label>
                   <label><input type="radio" name={index} id={"C"+index.toString()}/>{this.state.currentQuiz.options[index][2]}</label>
@@ -96,7 +96,10 @@ class StudentDashboard extends Component {
             <Button onClick={() => this.handleSubmitQuiz()}>Submit Quiz</Button><br/>
             <Button onClick={()=> this.backToDashboard()}>Back to Dashboard</Button>
           </div>
-          : null}
+          :
+          <div>{this.state.quizzes.map(quiz => (<Button onClick={() => this.takeQuiz(quiz._id, this.props.app.state.username, quiz.quizTitle)}>{quiz.quizTitle}</Button>))}<br/>
+          <Button onClick={() => this.props.app.setState({mode: '', username: '', password: ''})}>Logout</Button></div>
+        }
     </div>
     );
   }
