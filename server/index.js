@@ -87,10 +87,10 @@ io.on('connection', function (socket) {
         let newScore = new Score({
           students: [data.student._id],
           quiz: data.quizId,
-          scores: [data.score]
+          scores: [data.score],
+          studentAnswers: [data.studentAnswers]
         })
         newScore.save()
-        .catch()
       }
     })
   })
@@ -114,11 +114,19 @@ io.on('connection', function (socket) {
     .then(score => {
       if(score) {
         let taken = false;
+        let studentAnswers = [];
+        let studentScore;
         for (let i = 0; i < score.students.length; i++) {
-          if(data.user._id.toString() === score.students[i].toString()) taken = true;
+          if(data.user._id.toString() === score.students[i].toString()) {
+            taken = true;
+            studentAnswers = score.studentAnswers[i];
+            studentScore = score.scores[i];
+          }
         }
         if(taken) {
-          next({questions: null, taken: true});
+          Question.findOne({quiz: data.quiz._id})
+          .exec()
+          .then(questions => next({questions: questions, studentAnswers: studentAnswers, score: studentScore, taken: true}))
         } else {
           Question.findOne({quiz: data.quiz._id})
           .exec()

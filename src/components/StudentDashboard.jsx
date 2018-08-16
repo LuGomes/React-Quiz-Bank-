@@ -4,28 +4,33 @@ import Button from '@material-ui/core/Button';
 class StudentDashboard extends Component {
   constructor(props) {
     super(props);
-    this.state= {
+    this.state = {
       quizzes: [],
       currentQuiz: {},
-      showQuiz: false,
       studentAnswers: [],
       score: '',
-      quizTitle: ''
+      quizTitle: '',
+      showQuiz: false,
+      quizTakenArr: [],
+      quizOrder : ''
     }
   }
 
   componentDidMount() {
     this.props.app.socket.emit('getStudentQuizzes', {}, (quizzes) => {
-      this.setState({quizzes: quizzes});
+      this.setState({quizzes: quizzes, quizTaken: Array(quizzes.length).fill(false)});
     })
   }
 
-  takeQuiz(quiz) {
-    this.setState({quizTitle: quiz.title, score: ''});
+  takeQuiz(quiz, order) {
+    this.setState({quizTitle: quiz.title, score: '', order: order});
     this.props.app.socket.emit('takeQuiz', {quiz: quiz, user: this.props.app.state.user}, (data)=> {
       if (data.taken) {
         //if student has already taken quiz, alert
-        alert("you can only take a quiz once");
+        let updatedQuizTakenArr = this.state.quizTakenArr.slice();
+        updatedQuizTakenArr[order] = true;
+        this.setState({currentQuiz: data.questions, studentAnswers: data.studentAnswers,
+          showQuiz: true, quizTakenArr: updatedQuizTakenArr, score: data.score});
       } else {
         //no one has taken or you haven't taken, either way you can take this quiz
         this.setState({currentQuiz: data.questions, showQuiz: true});
@@ -61,7 +66,8 @@ class StudentDashboard extends Component {
           this.props.app.socket.emit('submitScore',
           {student: this.props.app.state.user,
             quizId: this.state.currentQuiz.quiz,
-            score: this.state.score})
+            score: this.state.score,
+            studentAnswers: this.state.studentAnswers})
         });
       });
     }
@@ -69,6 +75,26 @@ class StudentDashboard extends Component {
 
   backToDashboard() {
     this.setState({showQuiz: false})
+  }
+
+  color(option, index) {
+    if(this.state.quizTakenArr[this.state.order]) {
+      let {studentAnswers, currentQuiz} = this.state;
+      if(this.state.studentAnswers[index] === currentQuiz.correctOptions[index]) {
+        //got the question correct >>> paint it green if this is the current option, otherwise, don't do anything
+        if(option === studentAnswers[index]) {
+          return {backgroundColor: "#228b22"};
+        }
+      } else {
+        //got the question wrong
+        if(option === currentQuiz.correctOptions[index]) {
+          return {backgroundColor: "#8fbc8f"};
+        } else if(option === studentAnswers[index]) {
+          return {backgroundColor: "#cd5c5c"};
+        }
+      }
+      return {backgroundColor: "#eee"};
+    }
   }
 
   render() {
@@ -80,24 +106,26 @@ class StudentDashboard extends Component {
         </navbar>
         {this.state.showQuiz ?
           <div style={center}>
-            <p style={{color:"green"}}><strong>{this.state.quizTitle}</strong></p>
-            {this.state.score ? <Button variant="contained" color="secondary">You scored {this.state.score}</Button> : null}
+            <p><strong>{this.state.quizTitle}</strong></p>
+            {this.state.quizTakenArr[this.state.order] ? <Button variant="contained" color="secondary">You scored {this.state.score}</Button> : null}
             <ol>
               {this.state.currentQuiz.questions.map((question, index) => (
                 <li style={{textAlign: "left", fontWeight: "bold"}}>{question}<div className="radio" style={{display: "flex", flexDirection: "column", fontWeight: "normal"}}>
-                  <label><input type="radio" name={index} id={"A"+index.toString()}/>{this.state.currentQuiz.options[index][0]}</label>
-                  <label><input type="radio" name={index} id={"B"+index.toString()}/>{this.state.currentQuiz.options[index][1]}</label>
-                  <label><input type="radio" name={index} id={"C"+index.toString()}/>{this.state.currentQuiz.options[index][2]}</label>
-
+                  <label style={this.color("a", index)}>
+                    <input type="radio" name={index} id={"A"+index.toString()}/>{this.state.currentQuiz.options[index][0]}</label>
+                  <label style={this.color("b", index)}>
+                    <input type="radio" name={index} id={"B"+index.toString()}/>{this.state.currentQuiz.options[index][1]}</label>
+                  <label style={this.color("c", index)}>
+                    <input type="radio" name={index} id={"C"+index.toString()}/>{this.state.currentQuiz.options[index][2]}</label>
                 </div></li>
               ))}
             </ol>
-            {this.state.score ? null : <div><Button onClick={() => this.handleSubmitQuiz()}>Submit Quiz</Button><br/></div>}
+            {this.state.quizTakenArr[this.state.order] ? null : <div><Button onClick={() => this.handleSubmitQuiz()}>Submit Quiz</Button><br/></div>}
             <Button onClick={()=> this.backToDashboard()}>Back to Dashboard</Button>
           </div>
           :
-          this.state.quizzes.map(quiz => (<Button
-          onClick={() => this.takeQuiz(quiz)}>{quiz.title}</Button>))
+          this.state.quizzes.map((quiz, order) => (<Button
+          onClick={() => this.takeQuiz(quiz, order)}>{quiz.title}</Button>))
         }
     </div>
     );

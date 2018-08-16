@@ -29,13 +29,10 @@ var quizSchema = new mongoose.Schema({
   isComplete: {
     type: Boolean,
     required: true
-
   }
-
 })
 
 var scoreSchema = new mongoose.Schema({
-
   students: [{
     type: mongoose.Schema.ObjectId,
     ref: 'User'
@@ -47,7 +44,11 @@ var scoreSchema = new mongoose.Schema({
   scores: [{
     type: String,
     required: true
-  }]
+  }],
+  studentAnswers: [[{
+    type: String,
+    required: true
+  }]],
 })
 
 var questionSchema = new mongoose.Schema({
