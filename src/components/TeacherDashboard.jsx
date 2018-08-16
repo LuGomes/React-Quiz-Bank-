@@ -41,10 +41,6 @@ class TeacherDashboard extends Component {
         {this.state.showScores?
           <div>
             <h3>{this.state.currQuizTitle} </h3>
-
-
-
-
               {this.state.currQuizScore?
                 <div>
                   {this.state.currQuizScore.students.map((item, index) => <span> {item.username} :

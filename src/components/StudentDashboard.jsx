@@ -11,7 +11,6 @@ class StudentDashboard extends Component {
       showQuiz: false,
       studentAnswers: [],
       score: '',
-
     }
   }
   componentDidMount() {
@@ -22,17 +21,16 @@ class StudentDashboard extends Component {
 
   takeQuiz(quizId, username) {
     this.props.socket.emit('checkIfTaken', {quizId: quizId, username: username}, (data)=> {
-      if (data) {
+      if (data.taken) {
         //if student has already taken quiz, alert
+        alert(data.message);
       } else {
+        //no one has taken or you haven't taken, wither way you can take this quiz
         this.props.socket.emit('getQuizById', {quizId: quizId}, (currentQuiz) => {
-
-          this.setState({currentQuiz: currentQuiz, showQuiz: true});
+        this.setState({currentQuiz: currentQuiz, showQuiz: true});
         })
-
       }
     })
-
   }
 
   handleSubmitQuiz() {

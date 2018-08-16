@@ -157,10 +157,29 @@ io.on('connection', function (socket) {
 
     })
   });
-  socket.on('checkIfTaken', (data, next) => {
-    Score.findOne({})
-  })
 
+  socket.on('checkIfTaken', (data, next) => {
+    User.findOne({username: data.username})
+    .exec()
+    .then(user => {
+      Score.findOne({quiz: data.quizId})
+      .exec()
+      .then(score => {
+        if(score) {
+          let taken = false;
+          console.log(user._id, score.students[0]);
+          for (let i = 0; i < score.students.length; i++) {
+            if(user._id.toString() === score.students[i].toString()) taken = true;
+          }
+          if(taken) {
+            next({data: score, message: "you took the quiz already", taken: taken});
+          } else {
+            next({data: null, message: "you havent taken this quiz yet, you can take it only once", taken: taken});
+          }
+        }
+      })
+    })
+  })
 })
 
 server.listen(3001, () => console.log("Listening to port 3001"));
