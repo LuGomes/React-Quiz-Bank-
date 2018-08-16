@@ -1,5 +1,10 @@
+html, body, #root, .App {
+  height: 100vh
+}
+
 .App {
   text-align: center;
+  font-family: "Segoe UI";
 }
 
 .App-logo {
@@ -8,10 +13,9 @@
 }
 
 .App-header {
-  background-color: #222;
+  background: linear-gradient(90deg, #a8e6ce, #ffd3b5);
   height: 150px;
   padding: 20px;
-  color: white;
 }
 
 .App-title {

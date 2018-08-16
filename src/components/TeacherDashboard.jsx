@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
 
 class TeacherDashboard extends Component {
   constructor(props) {
@@ -13,13 +12,13 @@ class TeacherDashboard extends Component {
     }
   }
   componentDidMount() {
-    this.props.socket.emit('getQuizzes', {teacher: this.props.app.state.username}, (data) => {
+    this.props.app.socket.emit('getQuizzes', {teacher: this.props.app.state.username}, (data) => {
       this.setState({data: data})
     })
   }
 
   handleGetScores(quizId, quizTitle) {
-    this.props.socket.emit('getScores', {quizId: quizId}, (data) => {
+    this.props.app.socket.emit('getScores', {quizId: quizId}, (data) => {
       if (data) {
         this.setState({currQuizScore: data.data, showScores: true, currQuizTitle: quizTitle})
       } else {
@@ -35,8 +34,6 @@ class TeacherDashboard extends Component {
   }
 
   render() {
-    const btnStyle = {};
-
     return (
       <div>
         <h1>Hello {this.props.app.state.username}</h1>

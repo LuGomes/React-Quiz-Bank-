@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
 
 class StudentDashboard extends Component {
   constructor(props) {
@@ -15,20 +14,20 @@ class StudentDashboard extends Component {
     }
   }
   componentDidMount() {
-    this.props.socket.emit('getQuizzesForStudent', {}, (data) => {
+    this.props.app.socket.emit('getQuizzesForStudent', {}, (data) => {
       this.setState({quizzes: data});
     })
   }
 
   takeQuiz(quizId, username, quizTitle) {
     this.setState({quizTitle: quizTitle});
-    this.props.socket.emit('checkIfTaken', {quizId: quizId, username: username}, (data)=> {
+    this.props.app.socket.emit('checkIfTaken', {quizId: quizId, username: username}, (data)=> {
       if (data.taken) {
         //if student has already taken quiz, alert
         alert(data.message);
       } else {
         //no one has taken or you haven't taken, wither way you can take this quiz
-        this.props.socket.emit('getQuizById', {quizId: quizId}, (data) => {
+        this.props.app.socket.emit('getQuizById', {quizId: quizId}, (data) => {
         this.setState({currentQuiz: data, showQuiz: true});
         })
       }
@@ -48,7 +47,7 @@ class StudentDashboard extends Component {
         alert("Please select an answer for question", i + 1);
       }
     };
-    if(answers.length == this.state.currentQuiz.options.length) {
+    if(answers.length === this.state.currentQuiz.options.length) {
       this.setState({studentAnswers: answers}, () => {
         let studentAnswers = this.state.studentAnswers;
         let correctOptions = this.state.currentQuiz.correctOptions;
@@ -60,7 +59,7 @@ class StudentDashboard extends Component {
           }
         }
         this.setState({score: sum / correctOptions.length * 100 + "%"}, () => {
-          this.props.socket.emit('submitScore',
+          this.props.app.socket.emit('submitScore',
           {student: this.props.app.state.username,
             quiz: this.state.currentQuiz.quiz,
             score: this.state.score}, (data) => {

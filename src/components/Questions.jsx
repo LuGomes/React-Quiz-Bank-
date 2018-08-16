@@ -37,7 +37,7 @@ class NewQuiz extends Component {
   }
 
   handleQuizComplete() {
-    this.props.socket.emit('addQuestion', {
+    this.props.app.socket.emit('addQuestion', {
       questions: this.state.questionsArr,
       options: this.state.optionsArr,
       correctOptions: this.state.correctOptionsArr,

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import Button from '@material-ui/core/Button';
-import Questions from './Questions'
 import TextField from '@material-ui/core/TextField';
 
 class NewQuiz extends Component {
@@ -15,7 +14,7 @@ class NewQuiz extends Component {
     let quiz = {
       quizTitle: this.state.quizTitle,
       username:this.props.app.state.username};
-    this.props.socket.emit('addQuiz', quiz , (resp) => {
+    this.props.app.socket.emit('addQuiz', quiz , (resp) => {
       this.props.app.setState({
         mode: "questions",
         currQuizID: resp.currQuizID})
