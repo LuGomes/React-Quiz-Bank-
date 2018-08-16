@@ -14,8 +14,7 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      //CHANGE THIS TO USER SO WE HAVE THE ID OF LOGGED IN USER AND DONT HAVE TO LOOK IT UP IN THE DATABASE!!!
-      username: ''
+      user: {}
     };
     this.socket = io('http://localhost:3001');
     // this.socket.on('connect', function(){console.log('ws connect')});

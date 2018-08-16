@@ -18,7 +18,7 @@ var userSchema = new mongoose.Schema({
 });
 
 var quizSchema = new mongoose.Schema({
-  quizTitle: {
+  title: {
     type: String,
     required: true
   },

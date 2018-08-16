@@ -10,25 +10,19 @@ class NewQuiz extends Component {
     }
   }
 
-  handleCreateQuiz(){
-    let quiz = {
-      quizTitle: this.state.quizTitle,
-      username:this.props.app.state.username};
-    this.props.app.socket.emit('addQuiz', quiz , (resp) => {
-      this.props.app.setState({
-        mode: "questions",
-        currQuizID: resp.currQuizID})
-    })
+  handleCreateQuiz() {
+    let quiz = {title: this.state.quizTitle, user: this.props.app.state.user};
+    this.props.app.socket.emit('createQuiz', quiz , (newQuiz) => {
+      this.props.app.setState({mode: "questions", currQuiz: newQuiz})});
   }
 
   render() {
     return (
       <div>
-        <h1>This is the new quiz page</h1>
         <TextField type="text" label="Title" onChange={(e) => this.setState({quizTitle: e.target.value})}/><br/>
-        <Button onClick={() => this.handleCreateQuiz()}>Add question</Button>
+        <Button onClick={() => this.handleCreateQuiz()}>Add questions</Button><br/>
         <Button onClick={() => this.props.app.setState({mode: "dashboard"})}>Back to dashboard</Button>
-    </div>
+      </div>
     );
   }
 }

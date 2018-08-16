@@ -5,65 +5,58 @@ class TeacherDashboard extends Component {
   constructor(props) {
     super(props);
     this.state= {
-      data: [],
+      teacherQuizzes: [],
       showScores: false,
       currQuizScore: {},
       currQuizTitle: ''
     }
   }
   componentDidMount() {
-    this.props.app.socket.emit('getQuizzes', {teacher: this.props.app.state.username}, (data) => {
-      this.setState({data: data})
-    })
+    this.props.app.socket.emit('getTeacherQuizzes', {teacher: this.props.app.state.user}, (teacherQuizzes) => {
+      this.setState({teacherQuizzes: teacherQuizzes});
+    });
   }
 
-  handleGetScores(quizId, quizTitle) {
-    this.props.app.socket.emit('getScores', {quizId: quizId}, (data) => {
-      if (data) {
-        this.setState({currQuizScore: data.data, showScores: true, currQuizTitle: quizTitle})
+  handleGetScores(quiz) {
+    this.props.app.socket.emit('getScores', {quizId: quiz._id}, (score) => {
+      if (score) {
+        this.setState({currQuizScore: score, showScores: true, currQuizTitle: quiz.title})
       } else {
-        alert(data.message)
+        alert("no students have taken this quiz yet :(");
       }
-      console.log(data.message);
-
-    })
+    });
   }
 
   backToDashboard() {
-    this.setState({showScores: false})
+    this.setState({showScores: false});
   }
 
   render() {
     return (
       <div>
-        <h1>Hello {this.props.app.state.username}</h1>
-        {this.state.showScores?
+        <h1>Hello, {this.props.app.state.user.username}!</h1>
+        {this.state.showScores ?
+        <div>
+          {this.state.currQuizScore ?
           <div>
             <h3>{this.state.currQuizTitle} </h3>
-              {this.state.currQuizScore?
-                <div>
-                  {this.state.currQuizScore.students.map((item, index) => <span> {item.username} :
-                    {this.state.currQuizScore.scores[index]}<br/></span>)}
-              <Button onClick={()=> this.backToDashboard()}>Back to Dashboard</Button> </div> :
-              <div>
-              <p> No students have taken this quiz yet </p>
-              <Button onClick={()=> this.backToDashboard()}>Back to Dashboard</Button>
-            </div>
-          }
-
+            {this.state.currQuizScore.students.map((student, index) => <span>{student.username} :
+            {this.state.currQuizScore.scores[index]}<br/></span>)}
           </div> :
-
-          (
             <div>
-              {this.state.data.map(item =>
-                (<Button style={item.isComplete ? {backgroundColor: "green"} : {backgroundColor: "red"}} onClick={()=> this.handleGetScores(item._id)}>{item.quizTitle}</Button>)
-              )}<br/>
-              <Button onClick={() => this.props.app.setState({mode: "newQuiz"})}>Create Quiz</Button><br/>
-              <Button onClick={() => this.props.app.setState({mode: '', username: '', password: ''})}>Logout</Button>
-            </div>)
-          }
-        </div>
-      );
+              <span> No students have taken this quiz yet </span>
+            </div>}
+            <Button onClick={()=> this.backToDashboard()}>Back to Dashboard</Button>
+        </div> :
+        <div>
+          {this.state.teacherQuizzes.map(quiz =>
+            <Button style={quiz.isComplete ? {backgroundColor: "green"} : {backgroundColor: "red"}}
+              onClick={()=> this.handleGetScores(quiz)}>{quiz.title}</Button>)}<br/>
+          <Button onClick={() => this.props.app.setState({mode: "newQuiz"})}>Create Quiz</Button><br/>
+          <Button onClick={() => this.props.app.setState({mode: '', user: {}})}>Logout</Button>
+        </div>}
+      </div>
+    );
   }
 }
 

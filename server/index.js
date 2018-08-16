@@ -18,75 +18,53 @@ io.on('connection', function (socket) {
         }
      })
     .catch(err => {
-        next({err});
+        next({user: null, err: err});
     })
   });
 
   socket.on('registration', function (data, next) {
     const {username, password, userType} = data;
     var newUser = new User({username: username, password: password, userType: userType});
-    newUser.save((err, user) => {
-      if(user) {
-        next({user: user, err: null});
-      } else {
-        next({user: null, err: err});
-      }
+    newUser.save()
+    .then(user => {
+      next({user: user, err: null});
+    })
+    .catch(err => {
+      next({user: null, err: err});
     })
   });
 
-  socket.on('addQuestion', (data,next)=> {
-    let newQuestion = new Question(
-      {questions: data.questions,
-        options: data.options,
-        correctOptions: data.correctOptions,
-        quiz: data.currQuizID
+  socket.on('addQuiz', (data, next)=> {
+    let newQuestion = new Question ({
+      questions: data.questions,
+      options: data.options,
+      correctOptions: data.correctOptions,
+      quiz: data.currQuiz._id
     });
-    newQuestion.save((err,resp) =>{
-  if (!err) {
-    next({message: 'saved to mongoDB'})
-  }
-  else {
-    next({message: 'error'})
-  }
+    newQuestion.save()
+    .then(Quiz.findByIdAndUpdate({_id: data.currQuiz._id}, {isComplete: true}).exec())
   });
-  Quiz.findByIdAndUpdate({_id: data.currQuizID}, {isComplete: true})
-  .exec()
-  })
 
-  socket.on('addQuiz', (data,next)=> {
-    User.findOne({username: data.username})
+  socket.on('createQuiz', (data, next)=> {
+    let newQuiz = new Quiz({
+      title: data.title,
+      teacher: data.user._id,
+      isComplete: false
+      });
+    newQuiz.save()
+    .then(newQuiz => next(newQuiz));
+  });
+
+
+  socket.on('getTeacherQuizzes', (data, next) => {
+    Quiz.find({teacher: data.teacher._id})
     .exec()
-    .then(user => {
-      let newQuiz = new Quiz(
-        {quizTitle: data.quizTitle,
-          teacher: user._id,
-          isComplete: false
-        });
-
-        newQuiz.save((err,resp) =>{
-          if (!err) {
-            next({message: 'new Quiz saved', currQuizID: resp._id})
-          }
-          else {
-            next({message: err})
-          }
-        });
-      })
-    })
-
-  socket.on('getQuizzes', (data,next) => {
-    User.findOne({username: data.teacher})
-    .exec()
-    .then(user => {
-      Quiz.find({teacher: user._id})
-      .exec()
-      .then(quiz => {
-        next(quiz);
-      })
+    .then(teacherQuizzes => {
+      next(teacherQuizzes);
     })
   });
 
-  socket.on('getQuizzesForStudent', (data,next) => {
+  socket.on('getStudentQuizzes', (data, next) => {
     Quiz.find().exec().then(quizzes => {
       let completedQuizzes = [];
       for(let i = 0; i < quizzes.length; i++) {
@@ -96,90 +74,61 @@ io.on('connection', function (socket) {
     })
   });
 
-  socket.on('getQuizById', (data, next) => {
-    Question.findOne({quiz: data.quizId})
-    .exec()
-    .then(question => next(question)
-    )
-  });
-
-
-
   socket.on('submitScore', (data, next) => {
-    Score.findOne({quiz: data.quiz})
+    Score.findOne({quiz: data.quizId})
     .exec()
-    .then(resp => {
-      if (resp) {
-        User.findOne({username: data.student})
+    .then(score => {
+      if (score) {
+        let updatedStudents = score.students.concat([data.student._id]);
+        let updatedScores = score.scores.concat([data.score]);
+        Score.findOneAndUpdate({quiz: data.quizId}, {students: updatedStudents, scores: updatedScores})
         .exec()
-        .then(user => {
-          resp.students = resp.students.concat([user._id])
-          resp.scores = resp.scores.concat([data.score])
-          Score.findOneAndUpdate({quiz: data.quiz}, {students: resp.students, scores: resp.scores})
-          .exec()
-        })
-        //quiz was taken by somebody already
       } else {
-        //quiz hasnt been taken by anyone, i want to create a new document
-        User.findOne({username:data.student})
-        .exec()
-        .then(user => {
-          let newScore = new Score({
-            students: [user._id],
-            quiz: data.quiz,
-            scores: [data.score]
-          })
-          newScore.save((err, resp)=> {
-            if (!err) {
-              next({message: 'Score Saved!', data:resp})
-            } else {
-              next({message: err})
-            }
-          })
+        let newScore = new Score({
+          students: [data.student._id],
+          quiz: data.quizId,
+          scores: [data.score]
         })
+        newScore.save()
+        .catch()
       }
     })
   })
+
   socket.on('getScores', (data, next) => {
-    console.log(data.quizId)
     Score.findOne({quiz: data.quizId})
     .populate("students")
     .exec()
     .then(score => {
-      console.log("this should be the score document", score)
       if (score) {
-        next({data: score, message: "success!!!!"});
-
+        next(score);
       } else {
-        next({data: null, message:"no students have taken quiz yet"})
+        next(null);
       }
-
-
     })
   });
 
-  socket.on('checkIfTaken', (data, next) => {
-    User.findOne({username: data.username})
+  socket.on('takeQuiz', (data, next) => {
+    Score.findOne({quiz: data.quiz._id})
     .exec()
-    .then(user => {
-      Score.findOne({quiz: data.quizId})
-      .exec()
-      .then(score => {
-        if(score) {
-          let taken = false;
-          console.log(user._id, score.students[0]);
-          for (let i = 0; i < score.students.length; i++) {
-            if(user._id.toString() === score.students[i].toString()) taken = true;
-          }
-          if(taken) {
-            next({data: score, message: "you took the quiz already", taken: taken});
-          } else {
-            next({data: null, message: "you havent taken this quiz yet, you can take it only once", taken: taken});
-          }
-        } else {
-          next({data: null, message:"no one has taken this quiz yet", taken: false})
+    .then(score => {
+      if(score) {
+        let taken = false;
+        for (let i = 0; i < score.students.length; i++) {
+          if(data.user._id.toString() === score.students[i].toString()) taken = true;
         }
-      })
+        if(taken) {
+          next({questions: null, taken: true});
+        } else {
+          Question.findOne({quiz: data.quiz._id})
+          .exec()
+          .then(questions => next({questions: questions, taken: false}))
+        }
+      } else {
+        Question.findOne({quiz: data.quiz._id})
+        .exec()
+        .then(questions => next({questions: questions, taken: false}))
+      }
     })
   })
 })

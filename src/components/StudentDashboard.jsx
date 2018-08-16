@@ -13,23 +13,22 @@ class StudentDashboard extends Component {
       quizTitle: ''
     }
   }
+
   componentDidMount() {
-    this.props.app.socket.emit('getQuizzesForStudent', {}, (data) => {
-      this.setState({quizzes: data});
+    this.props.app.socket.emit('getStudentQuizzes', {}, (quizzes) => {
+      this.setState({quizzes: quizzes});
     })
   }
 
-  takeQuiz(quizId, username, quizTitle) {
-    this.setState({quizTitle: quizTitle});
-    this.props.app.socket.emit('checkIfTaken', {quizId: quizId, username: username}, (data)=> {
+  takeQuiz(quiz) {
+    this.setState({quizTitle: quiz.title, score: ''});
+    this.props.app.socket.emit('takeQuiz', {quiz: quiz, user: this.props.app.state.user}, (data)=> {
       if (data.taken) {
         //if student has already taken quiz, alert
-        alert(data.message);
+        alert("you can only take a quiz once");
       } else {
-        //no one has taken or you haven't taken, wither way you can take this quiz
-        this.props.app.socket.emit('getQuizById', {quizId: quizId}, (data) => {
-        this.setState({currentQuiz: data, showQuiz: true});
-        })
+        //no one has taken or you haven't taken, either way you can take this quiz
+        this.setState({currentQuiz: data.questions, showQuiz: true});
       }
     })
   }
@@ -60,26 +59,27 @@ class StudentDashboard extends Component {
         }
         this.setState({score: sum / correctOptions.length * 100 + "%"}, () => {
           this.props.app.socket.emit('submitScore',
-          {student: this.props.app.state.username,
-            quiz: this.state.currentQuiz.quiz,
-            score: this.state.score}, (data) => {
-            console.log(data.message);
-          }
-        )
+          {student: this.props.app.state.user,
+            quizId: this.state.currentQuiz.quiz,
+            score: this.state.score})
         });
       });
     }
   }
+
   backToDashboard() {
     this.setState({showQuiz: false})
   }
 
   render() {
     return (
-      <div>
-        <h1>Welcome, {this.props.app.state.username}!</h1>
+      <div style={center}>
+        <navbar style={{background: "linear-gradient(#c06c84, #f8b195)", padding: 20, width: "100%"}}>
+          <h3>Welcome, {this.props.app.state.user.username}!</h3>
+          <Button onClick={() => this.props.app.setState({mode: '', username: '', password: ''})}>Logout</Button>
+        </navbar>
         {this.state.showQuiz ?
-          <div style={{display: "flex", flexDirection: "column", alignItems: "center"}}>
+          <div style={center}>
             <p style={{color:"green"}}><strong>{this.state.quizTitle}</strong></p>
             {this.state.score ? <Button variant="contained" color="secondary">You scored {this.state.score}</Button> : null}
             <ol>
@@ -92,16 +92,24 @@ class StudentDashboard extends Component {
                 </div></li>
               ))}
             </ol>
-            <Button onClick={() => this.handleSubmitQuiz()}>Submit Quiz</Button><br/>
+            {this.state.score ? null : <div><Button onClick={() => this.handleSubmitQuiz()}>Submit Quiz</Button><br/></div>}
             <Button onClick={()=> this.backToDashboard()}>Back to Dashboard</Button>
           </div>
           :
-          <div>{this.state.quizzes.map(quiz => (<Button onClick={() => this.takeQuiz(quiz._id, this.props.app.state.username, quiz.quizTitle)}>{quiz.quizTitle}</Button>))}<br/>
-          <Button onClick={() => this.props.app.setState({mode: '', username: '', password: ''})}>Logout</Button></div>
+          this.state.quizzes.map(quiz => (<Button
+          onClick={() => this.takeQuiz(quiz)}>{quiz.title}</Button>))
         }
     </div>
     );
   }
+}
+
+const center = {
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  background: "#eee",
+  width: "100%"
 }
 
 export default StudentDashboard;

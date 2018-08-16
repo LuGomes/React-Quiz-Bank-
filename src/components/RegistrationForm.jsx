@@ -18,7 +18,7 @@ class RegistrationForm extends Component {
     this.props.app.socket.emit('registration', {username: username, password: password, userType: userType}, (data) => {
       let mode = data.user.userType === "student" ? "studentDashboard" : "teacherDashboard";
       this.props.app.setState({
-        username: data.user.username,
+        user: data.user,
         mode: mode});
     });
   }

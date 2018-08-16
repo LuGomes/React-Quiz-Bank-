@@ -18,13 +18,13 @@ class LoginForm extends Component {
     this.props.app.socket.emit('login', {username: username, password: password}, (data) => {
       if(!data.err) {
         if(data.user) {
-          //user found
           let mode = data.user.userType === "student" ? "studentDashboard" : "teacherDashboard";
-          this.props.app.setState({username: data.user.username, mode: mode});
+          this.props.app.setState({user: data.user, mode: mode});
         } else {
-          //there is no user with that login
           this.setState({username: '', password: '', invalidLogin: true});
         }
+      } else {
+        alert("Server error on login");
       }
     });
   }
