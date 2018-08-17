@@ -73,11 +73,11 @@ class TeacherDashboard extends Component {
                     <li style={{textAlign: "left", fontWeight: "bold"}}>{question}<div className="radio"
                       style={{display: "flex", flexDirection: "column", fontWeight: "normal"}}>
                       <label style={this.color("a", index1, index2)}>
-                        <input type="radio" name={index2} id={"a"+index2.toString()}/>{this.state.currQuizQuestions.options[index2][0]}</label>
+                        {this.state.currQuizQuestions.options[index2][0]}</label>
                       <label style={this.color("b", index1, index2)}>
-                        <input type="radio" name={index2} id={"b"+index2.toString()}/>{this.state.currQuizQuestions.options[index2][1]}</label>
+                        {this.state.currQuizQuestions.options[index2][1]}</label>
                       <label style={this.color("c", index1, index2)}>
-                        <input type="radio" name={index2} id={"c"+index2.toString()}/>{this.state.currQuizQuestions.options[index2][2]}</label>
+                        {this.state.currQuizQuestions.options[index2][2]}</label>
                     </div></li>
                   ))}
                 </ol>

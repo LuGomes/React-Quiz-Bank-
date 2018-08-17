@@ -19,12 +19,10 @@ class NewQuiz extends Component {
 
   render() {
     return (
-      <div style={center}>
-        <Paper elevation={2} style={{padding: 30}}>
-        <TextField type="text" label="Quiz Title" onChange={(e) => this.setState({quizTitle: e.target.value})}/><br/>
-        <Button style={btn} onClick={() => this.handleCreateQuiz()}>Add questions</Button><br/>
-        <Button style={btn} onClick={() => this.props.app.setState({mode: "teacherDashboard"})}>Back to dashboard</Button>
-      </Paper>
+      <div>
+        <TextField type="text" label="Title" onChange={(e) => this.setState({quizTitle: e.target.value})}/><br/>
+        <Button onClick={() => this.handleCreateQuiz()}>Add questions</Button><br/>
+        <Button onClick={() => this.props.app.setState({mode: "teacherDashboard"})}>Back to dashboard</Button>
       </div>
     );
   }
