@@ -18,7 +18,7 @@ class StudentDashboard extends Component {
 
   componentDidMount() {
     this.props.app.socket.emit('getStudentQuizzes', {}, (quizzes) => {
-      this.setState({quizzes: quizzes, quizTaken: Array(quizzes.length).fill(false)});
+      this.setState({quizzes: quizzes, quizTakenArr: Array(quizzes.length).fill(false)});
     })
   }
 
@@ -27,10 +27,8 @@ class StudentDashboard extends Component {
     this.props.app.socket.emit('takeQuiz', {quiz: quiz, user: this.props.app.state.user}, (data)=> {
       if (data.taken) {
         //if student has already taken quiz, alert
-        let updatedQuizTakenArr = this.state.quizTakenArr.slice();
-        updatedQuizTakenArr[order] = true;
         this.setState({currentQuiz: data.questions, studentAnswers: data.studentAnswers,
-          showQuiz: true, quizTakenArr: updatedQuizTakenArr, score: data.score});
+          showQuiz: true, score: data.score});
       } else {
         //no one has taken or you haven't taken, either way you can take this quiz
         this.setState({currentQuiz: data.questions, showQuiz: true});
@@ -41,12 +39,12 @@ class StudentDashboard extends Component {
   handleSubmitQuiz() {
     let answers = [];
     for (let i = 0; i < this.state.currentQuiz.options.length; i++) {
-      if(document.getElementById('A'+i).checked) {
-        answers.push('a');
-      } else if (document.getElementById('B'+i).checked) {
-        answers.push('b');
-      } else if (document.getElementById('C'+i).checked) {
-        answers.push('c');
+      if(document.getElementById("a"+i).checked) {
+        answers.push("a");
+      } else if (document.getElementById('b'+i).checked) {
+        answers.push("b");
+      } else if (document.getElementById('c'+i).checked) {
+        answers.push("c");
       } else {
         alert("Please select an answer for question", i + 1);
       }
@@ -62,7 +60,9 @@ class StudentDashboard extends Component {
             sum ++;
           }
         }
-        this.setState({score: sum / correctOptions.length * 100 + "%"}, () => {
+        let updatedQuizTakenArr = this.state.quizTakenArr.slice();
+        updatedQuizTakenArr[this.state.order] = true;
+        this.setState({score: sum / correctOptions.length * 100 + "%", quizTakenArr: updatedQuizTakenArr}, () => {
           this.props.app.socket.emit('submitScore',
           {student: this.props.app.state.user,
             quizId: this.state.currentQuiz.quiz,
@@ -80,7 +80,7 @@ class StudentDashboard extends Component {
   color(option, index) {
     if(this.state.quizTakenArr[this.state.order]) {
       let {studentAnswers, currentQuiz} = this.state;
-      if(this.state.studentAnswers[index] === currentQuiz.correctOptions[index]) {
+      if(studentAnswers[index] === currentQuiz.correctOptions[index]) {
         //got the question correct >>> paint it green if this is the current option, otherwise, don't do anything
         if(option === studentAnswers[index]) {
           return {backgroundColor: "#228b22"};
@@ -95,6 +95,7 @@ class StudentDashboard extends Component {
       }
       return {backgroundColor: "#eee"};
     }
+    return {backgroundColor: "#eee"};
   }
 
   render() {
@@ -110,13 +111,14 @@ class StudentDashboard extends Component {
             {this.state.quizTakenArr[this.state.order] ? <Button variant="contained" color="secondary">You scored {this.state.score}</Button> : null}
             <ol>
               {this.state.currentQuiz.questions.map((question, index) => (
-                <li style={{textAlign: "left", fontWeight: "bold"}}>{question}<div className="radio" style={{display: "flex", flexDirection: "column", fontWeight: "normal"}}>
+                <li style={{textAlign: "left", fontWeight: "bold"}}>{question}<div className="radio"
+                  style={{display: "flex", flexDirection: "column", fontWeight: "normal"}}>
                   <label style={this.color("a", index)}>
-                    <input type="radio" name={index} id={"A"+index.toString()}/>{this.state.currentQuiz.options[index][0]}</label>
+                    <input type="radio" name={index} id={"a"+index.toString()}/>{this.state.currentQuiz.options[index][0]}</label>
                   <label style={this.color("b", index)}>
-                    <input type="radio" name={index} id={"B"+index.toString()}/>{this.state.currentQuiz.options[index][1]}</label>
+                    <input type="radio" name={index} id={"b"+index.toString()}/>{this.state.currentQuiz.options[index][1]}</label>
                   <label style={this.color("c", index)}>
-                    <input type="radio" name={index} id={"C"+index.toString()}/>{this.state.currentQuiz.options[index][2]}</label>
+                    <input type="radio" name={index} id={"c"+index.toString()}/>{this.state.currentQuiz.options[index][2]}</label>
                 </div></li>
               ))}
             </ol>

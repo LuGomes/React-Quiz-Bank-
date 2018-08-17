@@ -81,7 +81,8 @@ io.on('connection', function (socket) {
       if (score) {
         let updatedStudents = score.students.concat([data.student._id]);
         let updatedScores = score.scores.concat([data.score]);
-        Score.findOneAndUpdate({quiz: data.quizId}, {students: updatedStudents, scores: updatedScores})
+        let studentAnswers = score.studentAnswers.concat([[data.studentAnswers]]);
+        Score.findOneAndUpdate({quiz: data.quizId}, {students: updatedStudents, scores: updatedScores, studentAnswers: studentAnswers})
         .exec()
       } else {
         let newScore = new Score({
