@@ -36,9 +36,9 @@ class App extends Component {
         <h1 className="App-title">Welcome to React Quiz</h1>
       </header>
       <p>Create a quiz that engages students, generates leads or promotes your brand.</p>
-      <Button variant="contained" style={btn}
+      <Button style={btn}
               onClick={() => this.setState({mode: 'login'})}>Login</Button>
-      <Button variant="contained" style={btn}
+      <Button style={btn}
               onClick={() => this.setState({mode: 'registration'})}>Register</Button>
     </div>
     return (
@@ -50,6 +50,7 @@ class App extends Component {
 }
 
 const btn = {
+  variant: "contained",
   fontFamily: "Segoe UI",
   backgroundColor: "#ffd3b5",
   margin: 10,

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
+import Paper from '@material-ui/core/Paper'
 
 class NewQuiz extends Component {
   constructor(props) {
@@ -18,13 +19,31 @@ class NewQuiz extends Component {
 
   render() {
     return (
-      <div>
-        <TextField type="text" label="Title" onChange={(e) => this.setState({quizTitle: e.target.value})}/><br/>
-        <Button onClick={() => this.handleCreateQuiz()}>Add questions</Button><br/>
-        <Button onClick={() => this.props.app.setState({mode: "dashboard"})}>Back to dashboard</Button>
+      <div style={center}>
+        <Paper elevation={2} style={{padding: 30}}>
+        <TextField type="text" label="Quiz Title" onChange={(e) => this.setState({quizTitle: e.target.value})}/><br/>
+        <Button style={btn} onClick={() => this.handleCreateQuiz()}>Add questions</Button><br/>
+        <Button style={btn} onClick={() => this.props.app.setState({mode: "teacherDashboard"})}>Back to dashboard</Button>
+      </Paper>
       </div>
     );
   }
+}
+
+const center = {
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  justifyContent: "center",
+  padding: 20,
+  height: "100%",
+  background: "linear-gradient(90deg, #a8e6ce, #ffd3b5)"
+}
+const btn = {
+  variant: "contained",
+  fontFamily: "Segoe UI",
+  backgroundColor: "#ffd3b5",
+  margin: 10,
 }
 
 export default NewQuiz;

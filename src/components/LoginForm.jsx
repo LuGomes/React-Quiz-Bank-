@@ -58,6 +58,7 @@ const center = {
   background: "linear-gradient(90deg, #a8e6ce, #ffd3b5)"
 }
 const btn = {
+  variant: "contained",
   fontFamily: "Segoe UI",
   backgroundColor: "#ffd3b5",
   margin: 10,
