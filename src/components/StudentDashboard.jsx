@@ -27,8 +27,10 @@ class StudentDashboard extends Component {
     this.props.app.socket.emit('takeQuiz', {quiz: quiz, user: this.props.app.state.user}, (data)=> {
       if (data.taken) {
         //if student has already taken quiz, alert
+        let updatedQuizTakenArr = this.state.quizTakenArr.slice();
+        updatedQuizTakenArr[this.state.order] = true;
         this.setState({currentQuiz: data.questions, studentAnswers: data.studentAnswers,
-          showQuiz: true, score: data.score});
+          showQuiz: true, score: data.score, quizTakenArr: updatedQuizTakenArr});
       } else {
         //no one has taken or you haven't taken, either way you can take this quiz
         this.setState({currentQuiz: data.questions, showQuiz: true});

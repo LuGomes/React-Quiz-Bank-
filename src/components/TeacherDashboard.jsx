@@ -12,6 +12,7 @@ class TeacherDashboard extends Component {
       currQuizQuestions: []
     }
   }
+
   componentDidMount() {
     this.props.app.socket.emit('getTeacherQuizzes', {teacher: this.props.app.state.user}, (teacherQuizzes) => {
       this.setState({teacherQuizzes: teacherQuizzes});
