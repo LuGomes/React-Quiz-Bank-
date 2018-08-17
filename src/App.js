@@ -9,6 +9,7 @@ import StudentDashboard from './components/StudentDashboard';
 import NewQuiz from './components/NewQuiz';
 import Questions from './components/Questions';
 import io from 'socket.io-client';
+import styles from './components/styles';
 
 class App extends Component {
   constructor(props) {
@@ -31,14 +32,16 @@ class App extends Component {
     else if(this.state.mode === "questions") screen = <Questions app={this}/>
     else  screen =
     <div>
+
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
+        <img style={{height: 200}} src='https://steamusercontent-a.akamaihd.net/ugc/933804400183701240/95E1ABA88A0955C3C53F8BD672B361D75C370B6E/' alt="logo" />
         <h1 className="App-title">Welcome to React Quiz</h1>
       </header>
+
       <p>Create a quiz that engages students, generates leads or promotes your brand.</p>
-      <Button style={btn}
+      <Button style={styles.btnForDefaultPage}
               onClick={() => this.setState({mode: 'login'})}>Login</Button>
-      <Button style={btn}
+      <Button style={styles.btnForDefaultPage}
               onClick={() => this.setState({mode: 'registration'})}>Register</Button>
     </div>
     return (
@@ -49,11 +52,5 @@ class App extends Component {
   }
 }
 
-const btn = {
-  variant: "contained",
-  fontFamily: "Segoe UI",
-  backgroundColor: "#ffd3b5",
-  margin: 10,
-}
 
 export default App;

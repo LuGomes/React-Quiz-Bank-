@@ -4,7 +4,7 @@ html, body, #root, .App {
 
 .App {
   text-align: center;
-  font-family: "Segoe UI";
+  /* font-family: "Segoe UI"; */
 }
 
 .App-logo {
@@ -13,18 +13,22 @@ html, body, #root, .App {
 }
 
 .App-header {
-  background: linear-gradient(90deg, #a8e6ce, #ffd3b5);
-  height: 150px;
-  padding: 20px;
+  background-color: rgb(33,49,90);
+  height: 260px;
+  
 }
 
 .App-title {
   font-size: 1.5em;
+  color: #eee;
+  margin: 0;
 }
 
 .App-intro {
   font-size: large;
 }
+
+
 
 @keyframes App-logo-spin {
   from { transform: rotate(0deg); }

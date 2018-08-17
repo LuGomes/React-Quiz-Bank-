@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
-import Paper from '@material-ui/core/Paper'
+import Paper from '@material-ui/core/Paper';
+import styles from './styles';
 
 class NewQuiz extends Component {
   constructor(props) {
@@ -37,18 +38,27 @@ class NewQuiz extends Component {
       correctOption: ''}, cb);
   }
 
-  handleQuizComplete() {
-    if(this.state.question) this.handleQuestionAddition(() => {
-      this.props.app.socket.emit('addQuiz', {
-        questions: this.state.questionsArr,
-        options: this.state.optionsArr,
-        correctOptions: this.state.correctOptionsArr,
-        currQuiz: this.props.app.state.currQuiz}, (resp) => {
-          console.log(resp.message);
-        });
-      this.props.app.setState({mode: "teacherDashboard"});
-    });
-  }
+  handleCompleteQuiz() {
+   if(this.state.question) this.handleQuestionAddition(() => {
+     this.props.app.socket.emit('addCompleteQuiz', {
+       questions: this.state.questionsArr,
+       options: this.state.optionsArr,
+       correctOptions: this.state.correctOptionsArr,
+       currQuiz: this.props.app.state.currQuiz});
+     this.props.app.setState({mode: "teacherDashboard"});
+   });
+ }
+
+ handleIncompleteQuiz() {
+   if(this.state.question) this.handleQuestionAddition(() => {
+     this.props.app.socket.emit('addIncompleteQuiz', {
+       questions: this.state.questionsArr,
+       options: this.state.optionsArr,
+       correctOptions: this.state.correctOptionsArr,
+       currQuiz: this.props.app.state.currQuiz});
+     this.props.app.setState({mode: "teacherDashboard"});
+   });
+ }
 
   backToDashboard() {
     this.props.app.setState({mode: 'teacherDashboard'});
@@ -64,21 +74,17 @@ class NewQuiz extends Component {
         <TextField type="text" label="Choice c." value={this.state.optionC} onChange={(e) => this.setState({optionC: e.target.value})}/><br/>
         <TextField style={{width: "100%"}} type="text" label="Correct choice: a, b or c?" value={this.state.correctOption} onChange={(e) => this.setState({correctOption: e.target.value})}/><br/>
 
-        <Button style={btn} onClick={() => this.handleQuestionAddition()}>Add this question</Button><br/>
-        <Button style={btn} onClick={() => this.handleQuizComplete()}>Save question and finish quiz</Button><br/>
-        <Button style={btn} onClick={() => this.backToDashboard()}>Back to Dashboard</Button>
+        <Button style={styles.btn} onClick={() => this.handleQuestionAddition()}>Add this question</Button><br/>
+        <Button style={styles.btn} onClick={() => this.handleCompleteQuiz()}>Save question and finish quiz</Button><br/>
+        <Button style={styles.btn} onClick={() => this.handleIncompleteQuiz()}>Save question and exit</Button><br/>
+        <Button style={styles.btn} onClick={() => this.backToDashboard()}>Back to Dashboard</Button>
       </Paper>
     </div>
     );
   }
 }
 
-const btn = {
-  variant: "contained",
-  fontFamily: "Segoe UI",
-  backgroundColor: "#ffd3b5",
-  margin: 10,
-}
+
 const center = {
   display: "flex",
   flexDirection: "column",

@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import Button from '@material-ui/core/Button';
+import styles from './styles';
+import Paper from '@material-ui/core/Paper';
 
 class StudentDashboard extends Component {
   constructor(props) {
@@ -105,46 +107,57 @@ class StudentDashboard extends Component {
       <div style={center}>
         <navbar style={{background: "linear-gradient(#c06c84, #f8b195)", padding: 20, width: "100%"}}>
           <h3>Welcome, {this.props.app.state.user.username}!</h3>
-          <Button onClick={() => this.props.app.setState({mode: '', username: '', password: ''})}>Logout</Button>
+          <Button style={styles.btn} onClick={() => this.props.app.setState({mode: '', username: '', password: ''})}>Logout</Button>
         </navbar>
+
+
         {this.state.showQuiz ?
           <div style={center}>
-            <p><strong>{this.state.quizTitle}</strong></p>
-            {this.state.quizTakenArr[this.state.order] ? <Button variant="contained" color="secondary">You scored {this.state.score}</Button> : null}
+            <h3><strong>{this.state.quizTitle}</strong></h3>
+            {this.state.quizTakenArr[this.state.order] ?
+               <p>You scored {parseFloat(this.state.score).toFixed()} %</p> : null}
             <ol>
               {this.state.currentQuiz.questions.map((question, index) => (
                 <li style={{textAlign: "left", fontWeight: "bold"}}>{question}<div className="radio"
                   style={{display: "flex", flexDirection: "column", fontWeight: "normal"}}>
                   <label style={this.color("a", index)}>
-                    {this.state.quizTakenArr[this.state.order] ? null : <input type="radio" name={index} id={"a"+index.toString()}/>}
+                    {this.state.quizTakenArr[this.state.order] ? "a." : <input type="radio" name={index} id={"a"+index.toString()}/>}
                     {this.state.currentQuiz.options[index][0]}</label>
                   <label style={this.color("b", index)}>
-                    {this.state.quizTakenArr[this.state.order] ? null : <input type="radio" name={index} id={"b"+index.toString()}/>}
+                    {this.state.quizTakenArr[this.state.order] ? "b." : <input type="radio" name={index} id={"b"+index.toString()}/>}
                     {this.state.currentQuiz.options[index][1]}</label>
                   <label style={this.color("c", index)}>
-                    {this.state.quizTakenArr[this.state.order] ? null : <input type="radio" name={index} id={"c"+index.toString()}/>}
+                    {this.state.quizTakenArr[this.state.order] ? "c." : <input type="radio" name={index} id={"c"+index.toString()}/>}
                     {this.state.currentQuiz.options[index][2]}</label>
                 </div></li>
               ))}
             </ol>
             {this.state.quizTakenArr[this.state.order] ? null : <div><Button onClick={() => this.handleSubmitQuiz()}>Submit Quiz</Button><br/></div>}
-            <Button onClick={()=> this.backToDashboard()}>Back to Dashboard</Button>
+            <Button style={styles.btn} onClick={()=> this.backToDashboard()}>Back to Dashboard</Button>
           </div>
           :
-          this.state.quizzes.map((quiz, order) => (<Button
-          onClick={() => this.takeQuiz(quiz, order)}>{quiz.title}</Button>))
-        }
-    </div>
-    );
+          <div style={{marginTop: 10}}>
+            <Paper elevation={2} style={{padding: 30, fontFamily: "Courier New"}}>
+              <h3> Quizzes: </h3>
+
+              {this.state.quizzes.map((quiz, order) => (<div><Button style={styles.btn}
+                onClick={() => this.takeQuiz(quiz, order)}>{quiz.title}</Button></div>))}
+
+              </Paper>
+            </div>
+          }
+        </div>
+      );
+    }
   }
-}
 
 const center = {
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
   background: "#eee",
-  width: "100%"
+  width: "100%",
+  height: "100%",
 }
 
 export default StudentDashboard;

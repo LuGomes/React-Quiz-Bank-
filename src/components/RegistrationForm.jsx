@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper'
 import TextField from '@material-ui/core/TextField';
+import styles from './styles';
 
 class RegistrationForm extends Component {
   constructor(props) {
@@ -31,11 +32,11 @@ class RegistrationForm extends Component {
               onChange={(e) => this.setState({username: e.target.value})}/><br/>
             <TextField type="password" label="Password"
               onChange={(e) => this.setState({password: e.target.value})}/><br/>
-            <Button style={{...btn, backgroundColor: "#ffaaa6" }}
+            <Button style={{...styles.btn, backgroundColor: "#ffaaa6" }}
               onClick={() => this.setState({userType: "student"})}>I'm a student</Button><br/>
-            <Button style={{...btn, backgroundColor: "#a8e6ce" }}
+            <Button style={{...styles.btn, backgroundColor: "#a8e6ce" }}
               onClick={() => this.setState({userType: "teacher"})}>I'm a teacher</Button><br/>
-            <Button style={btn} onClick={() => this.handleRegistration()}>Register</Button><br/><br/>
+            <Button style={styles.btn} onClick={() => this.handleRegistration()}>Register</Button><br/><br/>
             <a onClick={() => this.props.app.setState({mode: "login"})}>Already have an account?</a>
       </Paper>
       </div>
@@ -52,11 +53,6 @@ const center = {
   height: "100%",
   background: "linear-gradient(90deg, #a8e6ce, #ffd3b5)"
 }
-const btn = {
-  variant: "contained",
-  fontFamily: "Segoe UI",
-  backgroundColor: "#ffd3b5",
-  margin: 10,
-}
+
 
 export default RegistrationForm;

@@ -1,7 +1,8 @@
 import React, { Component} from 'react';
 import Button from '@material-ui/core/Button';
-import Paper from '@material-ui/core/Paper'
+import Paper from '@material-ui/core/Paper';
 import TextField from '@material-ui/core/TextField';
+import styles from './styles';
 
 class LoginForm extends Component {
   constructor(props) {
@@ -32,13 +33,13 @@ class LoginForm extends Component {
   render() {
     return (
       <div style={center}>
-        <Paper elevation={2} style={{padding: 30}}>
+        <Paper elevation={2} style={{padding: 30, fontFamily: "Courier New"}}>
           <TextField type="text" label="Username" value={this.state.username}
             onChange={(e) => this.setState({username: e.target.value})}/><br/>
           <TextField type="password" label="Password" value={this.state.password}
             onChange={(e) => this.setState({password: e.target.value})}/><br/>
-          <Button style={btn} onClick={() => this.handleLogin()}>Login</Button><br/>
-          <a onClick={() => this.props.app.setState({mode: "registration"})}>Don't have an account yet?</a><br/>
+          <Button style={styles.btn} onClick={() => this.handleLogin()}>Login</Button><br/>
+          <Button style={styles.btn} onClick={() => this.props.app.setState({mode: "registration"})}>Don't have an account yet?</Button><br/>
           {this.state.invalidLogin ?
             <div style={{color: "#D47474", margin: 10}}>Your login isn't right. Try again.</div> :
           null}
@@ -55,13 +56,10 @@ const center = {
   justifyContent: "center",
   padding: 20,
   height: "100%",
-  background: "linear-gradient(90deg, #a8e6ce, #ffd3b5)"
+  background: "linear-gradient(90deg, #a8e6ce, #ffd3b5)",
 }
-const btn = {
-  variant: "contained",
-  fontFamily: "Segoe UI",
-  backgroundColor: "#ffd3b5",
-  margin: 10,
-}
+
+
+
 
 export default LoginForm;
