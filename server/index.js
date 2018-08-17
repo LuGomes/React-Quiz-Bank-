@@ -102,9 +102,13 @@ io.on('connection', function (socket) {
     .exec()
     .then(score => {
       if (score) {
-        next(score);
+        Question.findOne({quiz: data.quizId})
+        .exec()
+        .then(questions => next({questions: questions, score: score}))
       } else {
-        next(null);
+        Question.findOne({quiz: data.quizId})
+        .exec()
+        .then(questions => next({questions: questions, score: null}))
       }
     })
   });
