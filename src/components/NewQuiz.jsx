@@ -21,7 +21,7 @@ class NewQuiz extends Component {
       <div>
         <TextField type="text" label="Title" onChange={(e) => this.setState({quizTitle: e.target.value})}/><br/>
         <Button onClick={() => this.handleCreateQuiz()}>Add questions</Button><br/>
-        <Button onClick={() => this.props.app.setState({mode: "dashboard"})}>Back to dashboard</Button>
+        <Button onClick={() => this.props.app.setState({mode: "teacherDashboard"})}>Back to dashboard</Button>
       </div>
     );
   }

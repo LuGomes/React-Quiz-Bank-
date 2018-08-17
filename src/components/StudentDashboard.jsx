@@ -116,11 +116,14 @@ class StudentDashboard extends Component {
                 <li style={{textAlign: "left", fontWeight: "bold"}}>{question}<div className="radio"
                   style={{display: "flex", flexDirection: "column", fontWeight: "normal"}}>
                   <label style={this.color("a", index)}>
-                    <input type="radio" name={index} id={"a"+index.toString()}/>{this.state.currentQuiz.options[index][0]}</label>
+                    {this.state.quizTakenArr[this.state.order] ? null : <input type="radio" name={index} id={"a"+index.toString()}/>}
+                    {this.state.currentQuiz.options[index][0]}</label>
                   <label style={this.color("b", index)}>
-                    <input type="radio" name={index} id={"b"+index.toString()}/>{this.state.currentQuiz.options[index][1]}</label>
+                    {this.state.quizTakenArr[this.state.order] ? null : <input type="radio" name={index} id={"b"+index.toString()}/>}
+                    {this.state.currentQuiz.options[index][1]}</label>
                   <label style={this.color("c", index)}>
-                    <input type="radio" name={index} id={"c"+index.toString()}/>{this.state.currentQuiz.options[index][2]}</label>
+                    {this.state.quizTakenArr[this.state.order] ? null : <input type="radio" name={index} id={"c"+index.toString()}/>}
+                    {this.state.currentQuiz.options[index][2]}</label>
                 </div></li>
               ))}
             </ol>
