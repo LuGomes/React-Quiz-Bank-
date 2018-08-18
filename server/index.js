@@ -34,7 +34,7 @@ io.on('connection', function (socket) {
     })
   });
 
-  socket.on('addQuiz', (data, next)=> {
+  socket.on('addCompleteQuiz', (data, next)=> {
     let newQuestion = new Question ({
       questions: data.questions,
       options: data.options,
@@ -43,6 +43,17 @@ io.on('connection', function (socket) {
     });
     newQuestion.save()
     .then(Quiz.findByIdAndUpdate({_id: data.currQuiz._id}, {isComplete: true}).exec())
+  });
+
+  socket.on('addIncompleteQuiz', (data, next)=> {
+    let newQuestion = new Question ({
+      questions: data.questions,
+      options: data.options,
+      correctOptions: data.correctOptions,
+      quiz: data.currQuiz._id
+    });
+    newQuestion.save()
+    .then(Quiz.findByIdAndUpdate({_id: data.currQuiz._id}).exec())
   });
 
   socket.on('createQuiz', (data, next)=> {

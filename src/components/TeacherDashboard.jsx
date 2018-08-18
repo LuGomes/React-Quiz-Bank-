@@ -9,7 +9,8 @@ class TeacherDashboard extends Component {
       showScores: false,
       currQuizScore: {},
       currQuizTitle: '',
-      currQuizQuestions: []
+      currQuizQuestions: [],
+      currQuiz: {}
     }
   }
 
@@ -27,7 +28,7 @@ class TeacherDashboard extends Component {
       } else {
         // alert("no students have taken this quiz yet :(");
         this.setState({currQuizQuestions: data.questions,
-          showScores: true, currQuizTitle: quiz.title})
+          showScores: true, currQuizTitle: quiz.title, currQuiz: quiz})
       }
     });
   }
@@ -63,46 +64,37 @@ class TeacherDashboard extends Component {
           {this.state.currQuizScore ?
           <div>
             <h3>{this.state.currQuizTitle} </h3>
-
-            {/* Trying to repeat code for each student */}
             {this.state.currQuizScore.students.map((student, index1) =>
               <div>
-                {student.username} scored {this.state.currQuizScore.scores[index1]}<br/>
+                {student.username} scored {this.state.score}<br/>
                 <ol>
                   {this.state.currQuizQuestions.questions.map((question, index2) => (
                     <li style={{textAlign: "left", fontWeight: "bold"}}>{question}<div className="radio"
                       style={{display: "flex", flexDirection: "column", fontWeight: "normal"}}>
                       <label style={this.color("a", index1, index2)}>
-                        {this.state.currQuizQuestions.options[index2][0]}</label>
+                        a. {this.state.currQuizQuestions.options[index2][0]}</label>
                       <label style={this.color("b", index1, index2)}>
-                        {this.state.currQuizQuestions.options[index2][1]}</label>
+                        b. {this.state.currQuizQuestions.options[index2][1]}</label>
                       <label style={this.color("c", index1, index2)}>
-                        {this.state.currQuizQuestions.options[index2][2]}</label>
+                        c. {this.state.currQuizQuestions.options[index2][2]}</label>
                     </div></li>
                   ))}
                 </ol>
               </div>
             )}
-            {/* Repeat this code for each student */}
-            {/* {this.state.currQuizScore.students.map((student, index) => <span>{student.username} :
-            {this.state.currQuizScore.scores[index]}<br/></span>)}
-            <ol>
-              {this.state.currQuizQuestions.questions.map((question, index) => (
-                <li style={{textAlign: "left", fontWeight: "bold"}}>{question}<div className="radio"
-                  style={{display: "flex", flexDirection: "column", fontWeight: "normal"}}>
-                  <label >
-                    <input type="radio" name={index} id={"a"+index.toString()}/>{this.state.currQuizQuestions.options[index][0]}</label>
-                  <label >
-                    <input type="radio" name={index} id={"b"+index.toString()}/>{this.state.currQuizQuestions.options[index][1]}</label>
-                  <label >
-                    <input type="radio" name={index} id={"c"+index.toString()}/>{this.state.currQuizQuestions.options[index][2]}</label>
-                </div></li>
-              ))}
-            </ol> */}
-            {/* Repeat this code for each student */}
           </div> :
             <div>
-              <span> No students have taken this quiz yet </span>
+              {this.state.currQuiz.isComplete? <span> No students have taken this quiz yet </span> : "This quiz is not complete, add edit functionality here"}
+              <ol>
+                {this.state.currQuizQuestions.questions.map((question, index) => (
+                  <li style={{textAlign: "left", fontWeight: "bold"}}>{question}<div className="radio"
+                    style={{display: "flex", flexDirection: "column", fontWeight: "normal"}}>
+                    <label>a. {this.state.currQuizQuestions.options[index][0]}</label>
+                    <label>b. {this.state.currQuizQuestions.options[index][1]}</label>
+                    <label>c. {this.state.currQuizQuestions.options[index][2]}</label>
+                  </div></li>
+                ))}
+              </ol>
             </div>}
             <Button onClick={()=> this.backToDashboard()}>Back to Dashboard</Button>
         </div> :
