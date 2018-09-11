@@ -35,10 +35,12 @@ class App extends Component {
 
       <header className="App-header">
         <img style={{height: 200}} src='https://steamusercontent-a.akamaihd.net/ugc/933804400183701240/95E1ABA88A0955C3C53F8BD672B361D75C370B6E/' alt="logo" />
-        <h1 className="App-title">Welcome to React Quiz</h1>
+        <h1 className="App-title">React Quiz</h1>
       </header>
 
-      <p>Create a quiz that engages students, generates leads or promotes your brand.</p>
+      <p>React Quiz is a platform for teachers to create online quizzes for students. Students and Teachers
+      can monitor results to check proficiency in class material. </p>
+      <p> Get Started!</p>
       <Button style={styles.btnForDefaultPage}
               onClick={() => this.setState({mode: 'login'})}>Login</Button>
       <Button style={styles.btnForDefaultPage}

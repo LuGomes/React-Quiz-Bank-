@@ -56,7 +56,7 @@ const center = {
   justifyContent: "center",
   padding: 20,
   height: "100%",
-  background: "linear-gradient(90deg, #a8e6ce, #ffd3b5)",
+  background: "rgb(33,49,90)",
 }
 
 

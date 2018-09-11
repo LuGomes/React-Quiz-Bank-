@@ -10,7 +10,8 @@ class RegistrationForm extends Component {
     this.state = {
       username: '',
       password: '',
-      userType: ''
+      userType: '',
+      buttonPressed: false
     }
   }
 
@@ -23,8 +24,18 @@ class RegistrationForm extends Component {
         mode: mode});
     });
   }
+  testFunction(e){
+    this.setState({userType: "student", buttonPressed: true});
+    // e.target.style.backgroundColor = "yellow";
+
+    // someVar.backgroundColor = "yellow";
+    // console.log(e.target.somVar);
+
+    // console.log("target.style", e.target.style);
+  }
 
   render() {
+    
     return (
       <div style={center}>
         <Paper elevation={2} style={{padding: 30}}>
@@ -32,8 +43,8 @@ class RegistrationForm extends Component {
               onChange={(e) => this.setState({username: e.target.value})}/><br/>
             <TextField type="password" label="Password"
               onChange={(e) => this.setState({password: e.target.value})}/><br/>
-            <Button style={{...styles.btn, backgroundColor: "#ffaaa6" }}
-              onClick={() => this.setState({userType: "student"})}>I'm a student</Button><br/>
+            <Button style={this.state.buttonPressed? someVar2 : someVar}
+              onClick={(e) => this.testFunction(e)}>I'm a student</Button><br/>
             <Button style={{...styles.btn, backgroundColor: "#a8e6ce" }}
               onClick={() => this.setState({userType: "teacher"})}>I'm a teacher</Button><br/>
             <Button style={styles.btn} onClick={() => this.handleRegistration()}>Register</Button><br/><br/>
@@ -43,6 +54,7 @@ class RegistrationForm extends Component {
     );
   }
 }
+// document.getElementByClassName("btn").style.backgroundColor = "yellow";
 
 const center = {
   display: "flex",
@@ -51,7 +63,19 @@ const center = {
   justifyContent: "center",
   padding: 20,
   height: "100%",
-  background: "linear-gradient(90deg, #a8e6ce, #ffd3b5)"
+  background: "rgb(33,49,90)",
+}
+const someVar= {
+  variant: "contained",
+  fontFamily: "Arial",
+  margin: 5,
+  backgroundColor:  "red",
+}
+const someVar2= {
+  variant: "contained",
+  fontFamily: "Arial",
+  margin: 5,
+  backgroundColor:  "yellow",
 }
 
 
